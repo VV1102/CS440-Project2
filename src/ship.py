@@ -18,11 +18,10 @@ def create_grid(D):
 
     return grid #returns the complete grid
 
-def get_neighbors(grid, row, col):
-    #this function returns a list of neighboring cell coordinates of up, down, left, and right
-    #no diagonals
 
-    D = len(grid)
+def get_neighbors(grid, row, col):
+    #this function returns the neighboring cell coordinates up, down, left, and right
+    #no diagonals, and it works for both square and rectangular grids now
 
     directions = [
         (-1, 0),  #goes up
@@ -38,12 +37,16 @@ def get_neighbors(grid, row, col):
         newRow = row + rowChange
         newCol = col + colChange
 
+        #check that the row is inside the grid first
+        #then check the column against the length of THAT row
+        #cuz using D for both only works for square grids and our tests use rectangles too
         #make sure the neighbor is still within the grid boundaries
 
-        if 0 <= newRow < D and 0 <= newCol < D:
+        if 0 <= newRow < len(grid) and 0 <= newCol < len(grid[newRow]):
             neighbors.append((newRow, newCol))
 
     return neighbors
+
 
 def count_open_neighbors(grid, row, col):
     #this function counts how many of the neighboring cells are open
