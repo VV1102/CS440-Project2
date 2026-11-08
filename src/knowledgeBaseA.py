@@ -7,9 +7,9 @@ def initializeKnowledgeBase(grid):
     openCells = getOpenCells(grid)
 
     # then we store the possible cells in a set
-    possibleCells = set(openCells)
+    posCells = set(openCells)
 
-    return possibleCells
+    return posCells
 
 
 def updateKnowledgeBase(possibleCells, locatorPosition, k, result):
@@ -20,7 +20,7 @@ def updateKnowledgeBase(possibleCells, locatorPosition, k, result):
     if result == "found":
         return {locatorPosition}
 
-    locatorRow, locatorCol = locatorPosition
+    locRow, locCol = locatorPosition
 
     # we go through each possible location
     for cell in possibleCells:
@@ -28,20 +28,20 @@ def updateKnowledgeBase(possibleCells, locatorPosition, k, result):
         row, col = cell
 
         # we calculate distance in rows and columns
-        rowDistance = abs(locatorRow - row)
-        colDistance = abs(locatorCol - col)
+        rowDistance = abs(locRow - row)
+        colDistance = abs(locCol - col)
 
         # this part checks whether the cell is inside the detector range
-        insideSquare = rowDistance <= k and colDistance <= k
+        insSquare = rowDistance <= k and colDistance <= k
 
         if result == "ping":
             # a ping means LostBot must be inside the square
-            if insideSquare:
+            if insSquare:
                 updatedCells.add(cell)
 
         elif result == "no ping":
             # no ping means LostBot is outside the square
-            if not insideSquare:
+            if not insSquare:
                 updatedCells.add(cell)
 
     #we remove the locatorbots current position from the set since lostbot isn't there

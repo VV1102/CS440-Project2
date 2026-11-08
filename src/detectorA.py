@@ -4,15 +4,15 @@ def detectorTypeA(locatorPosition, lostBotPosition, k):
         return "found"
 
     # this part gets the coordinates of both bots
-    locatorRow, locatorCol = locatorPosition
+    locR, locC = locatorPosition
     lostRow, lostCol = lostBotPosition
 
     # we calculate distance between the bots
-    rowDistance = abs(locatorRow - lostRow)
-    colDistance = abs(locatorCol - lostCol)
+    rowDist = abs(locR - lostRow)
+    colDist = abs(locC - lostCol)
 
     # this part Checks whether LostBot is within the square radius
-    if rowDistance <= k and colDistance <= k: 
+    if rowDist <= k and colDist <= k: 
         return "ping"
 
     return "no ping" #lostbot is outside the square radius

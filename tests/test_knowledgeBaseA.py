@@ -69,7 +69,7 @@ def test_no_ping_update(): #this tests if no ping, cells outside the detector ra
         (2, 2)
     }
 
-#tests if detector finds the lostbot
+#tests if detector finds the lostbot, the knowledge base is updated to only contain the locator's position
 def test_found_update():
     possibleCells = {(0, 0), (0, 1), (1, 1)}
 

@@ -11,10 +11,10 @@ from src.pathfinding import bfs
 
 def runBaselineA(grid, locatorPosition, lostBotPosition, k):
     # define the function wit the map, the position of the locator bot, the position of the lost bot and the range of the detector 
-    possibleCells = initializeKnowledgeBase(grid)
+    possibleLoc = initializeKnowledgeBase(grid)
     #we start with making all open cells possible locations for the lost bot
     moves = 0 #counts how many times the locator bot moves
-    detectorActions = 0 #locator uses its detector count
+    dAct = 0 #locator uses its detector count
 
     while True:
         #we do a loop uses the detector to see the lostbot position 
@@ -23,15 +23,15 @@ def runBaselineA(grid, locatorPosition, lostBotPosition, k):
             lostBotPosition,
             k
         ) 
-        detectorActions += 1
+        dAct += 1
 
         # we stop the loop if LostBot has been found
         if result == "found":
             break
 
         # we update the possible lostbot locations based off the detector feedback
-        possibleCells = updateKnowledgeBase(
-            possibleCells,
+        possibleLoc = updateKnowledgeBase(
+            possibleLoc,
             locatorPosition,
             k,
             result
@@ -39,9 +39,9 @@ def runBaselineA(grid, locatorPosition, lostBotPosition, k):
 
         # this part finds the nearest cell using BFS 
         nearestCells = []
-        shortestDistance = float("inf") #sets shortest dist to infinity so the distance has a value for comparison
+        shortestD = float("inf") #sets shortest dist to infinity so the distance has a value for comparison
 
-        for cell in possibleCells: #goes through each cell 
+        for cell in possibleLoc: #goes through each cell 
             path = bfs(grid, locatorPosition, cell) #uses BFS to find the shortest path from Locatorbot to cell
 
             if path is None:
@@ -49,11 +49,11 @@ def runBaselineA(grid, locatorPosition, lostBotPosition, k):
 
             distance = len(path) - 1
 
-            if distance < shortestDistance: 
-                shortestDistance = distance
+            if distance < shortestD: 
+                shortestD = distance
                 nearestCells = [cell]
             #checks if the cell is closer than previous closest cell and saves
-            elif distance == shortestDistance:
+            elif distance == shortestD:
                 nearestCells.append(cell)
 
         #this part checks if the list of reachable cells is empty and raises an error if so
@@ -69,11 +69,11 @@ def runBaselineA(grid, locatorPosition, lostBotPosition, k):
         locatorPosition = path[1]
         moves += 1
 
-    totalCost = moves + 0.5 * detectorActions
+    totalC = moves + 0.5 * dAct
     #calculate the total cost of the search 
     return {
         "moves": moves,
-        "detector_actions": detectorActions,
-        "total_cost": totalCost,
+        "detector_actions": dAct,
+        "total_cost": totalC,
         "found": True
     }

@@ -1,7 +1,7 @@
 import pytest
 from src.pathfinding import bfs
-from src.improvedA import calculateInformationGain
-from src.improvedA import chooseBestScanPosition
+from src.improvedA import calculateInfoGain
+from src.improvedA import chooseBestPosition
 from src.improvedA import runImprovedA 
 
 def test_balanced_scan():
@@ -12,7 +12,7 @@ def test_balanced_scan():
         (0, 3)
     }
 #this tests when the lostbot is in the middle of the detector range
-    result = calculateInformationGain(
+    result = calculateInfoGain(
         possibleCells,
         (0, 0),
         1
@@ -31,7 +31,7 @@ def test_no_information():
         (1, 1)
     }
 
-    result = calculateInformationGain(
+    result = calculateInfoGain(
         possibleCells,
         (0, 0),
         2
@@ -53,7 +53,7 @@ def test_choose_valid_position(): #this part tests if the chosen position is val
         (2, 0), (2, 1), (2, 2)
     }
 
-    result = chooseBestScanPosition(
+    result = chooseBestPosition(
         grid, (0, 0), possibleCells, 1
     )
     #checks that the selected position is in the possible cell
@@ -72,7 +72,7 @@ def test_choose_reachable_position():
         (1, 1), (1, 2), (2, 2)
     }
 
-    result = chooseBestScanPosition(
+    result = chooseBestPosition(
         grid, (0, 0), possibleCells, 1
     )
 

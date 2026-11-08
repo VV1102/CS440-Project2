@@ -8,43 +8,43 @@ from src.knowledgeBaseA import (
     updateKnowledgeBase
 ) #get all the imports 
 
-def calculateInformationGain(possibleCells, scanPosition, k):
+def calculateInfoGain(possibleLoc, scanPosition, k):
     # we check if there are any possible locations left for the lostbot
 
-    if len(possibleCells) == 0:
+    if len(possibleLoc) == 0:
         return 0 #if not 0
     #this part gets the row and column of the scan position
-    scanRow, scanCol = scanPosition
+    currentrow, currentCol = scanPosition
     insideCount = 0
     
-    for row, col in possibleCells:
+    for row, col in possibleLoc:
         #we find how far the cell is from the scan position
-        rowDistance = abs(scanRow - row)
-        colDistance = abs(scanCol - col)
+        rowDist = abs(currentrow - row)
+        colDist = abs(currentCol - col)
         #counts the cells within the detector range
-        if rowDistance <= k and colDistance <= k:
+        if rowDist <= k and colDist <= k:
             insideCount += 1
 
     #probability of a ping
-    probability = insideCount / len(possibleCells)
+    prob = insideCount / len(possibleLoc)
 
     #no info is gained if zero
-    if probability == 0 or probability == 1:
+    if prob == 0 or prob == 1:
         return 0
 
     # we calc information gain using the binary entropy formula
-    informationGain = (
-        -probability * math.log2(probability)
-        - (1 - probability) * math.log2(1 - probability)
+    infoGain = (
+        -prob * math.log2(prob)
+        - (1 - prob) * math.log2(1 - prob)
     )
 
-    return informationGain
+    return infoGain
 
-def chooseBestScanPosition(grid, locatorPosition, possibleCells, k):
+def chooseBestPosition(grid, locatorPosition, possibleCells, k):
     # we get all open cells where locatorbot could scan
     openCells = getOpenCells(grid)
     #okay we store the best positions and score for comparison
-    bestPositions = []
+    bestPos = []
     bestScore = float("-inf")
 
     # we check every possible scanning location
@@ -60,30 +60,30 @@ def chooseBestScanPosition(grid, locatorPosition, possibleCells, k):
         distance = len(path) - 1
 
         # this part calculates expected information gain
-        informationGain = calculateInformationGain(
+        infoGain = calculateInfoGain(
             possibleCells, position, k
         )
  
-        score = informationGain / (distance + 0.5)
+        score = infoGain / (distance + 0.5)
         #save the best score and position 
         if score > bestScore + 1e-10:
             bestScore = score
-            bestPositions = [position]
+            bestPos = [position]
         #we keep the other positions that have the samr score
         elif abs(score - bestScore) <= 1e-10:
-            bestPositions.append(position)
+            bestPos.append(position)
 
-    if not bestPositions:
+    if not bestPos:
         return None
 
-    return random.choice(bestPositions) #random choice
+    return random.choice(bestPos) #random choice
 
 def runImprovedA(grid, locatorPosition, lostBotPosition, k):
     # open cells as possible LostBot locations
     possibleCells = initializeKnowledgeBase(grid)
     # we keep track of moves and detector actions
     moves = 0
-    detectorActions = 0
+    detActions = 0
 
     checkedPositions = set()
 
@@ -94,7 +94,7 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
             lostBotPosition,
             k
         )
-        detectorActions += 1
+        detActions += 1
 
         # we stop when LostBot is found
         if result == "found":
@@ -111,10 +111,10 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
         checkedPositions.add(locatorPosition)
 
         if not possibleCells:
-            raise RuntimeError("No possible LostBot locations remain")
+            raise RuntimeError("None possible LostBot locations left")
 
         # we select the best position to scan next
-        target = chooseBestScanPosition(
+        target = chooseBestPosition(
             grid,
             locatorPosition,
             possibleCells,
@@ -122,12 +122,12 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
         )
 
         # checks how much info the chosen position would give us
-        bestGain = calculateInformationGain(
+        bestGain = calculateInfoGain(
             possibleCells, target, k
         ) if target is not None else 0
         #so if the scan isn't useful or we there alr, we go to the nearest lostbot loc
         if bestGain <= 0 or target == locatorPosition:
-            nearestDistance = float("inf")
+            nearestDist = float("inf")
             nearestCells = []
 
             for cell in possibleCells:
@@ -138,15 +138,15 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
                 #calc the distance to the location
                 distance = len(path) - 1
 
-                if distance < nearestDistance:
-                    nearestDistance = distance
+                if distance < nearestDist:
+                    nearestDist = distance
                     nearestCells = [cell]
 
-                elif distance == nearestDistance:
+                elif distance == nearestDist:
                     nearestCells.append(cell)
 
             if not nearestCells:
-                raise RuntimeError("No reachable LostBot candidates")
+                raise RuntimeError("None reachable LostBot candidates")
             #if none of locations are reachable we error
             target = random.choice(nearestCells)
 
@@ -154,7 +154,7 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
         path = bfs(grid, locatorPosition, target)
 
         if path is None or len(path) < 2:
-            raise RuntimeError("Unable to make progress")
+            raise RuntimeError("Unable progress")
 
         # we move one cell along the BFS path
         locatorPosition = path[1]
@@ -162,7 +162,7 @@ def runImprovedA(grid, locatorPosition, lostBotPosition, k):
 
     return {
         "moves": moves,
-        "detector_actions": detectorActions,
-        "total_cost": moves + 0.5 * detectorActions,
+        "detector_actions": detActions,
+        "total_cost": moves + 0.5 * detActions,
         "found": True
     }
