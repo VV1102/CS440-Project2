@@ -1,7 +1,7 @@
 # Varshini does B content
 
 
-"""Professor's Type B baseline: detect, update, target highest posterior."""
+# Professor's Type B baseline: detect, update, target highest posterior.
 import random
 from src.pathfinding import bfs
 from src.knowledgeBaseB import updateKnowledgeBaseB

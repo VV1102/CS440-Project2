@@ -1,6 +1,6 @@
 # Varshini does B content
 
-"""type B detector: probabilistic pings, not maze-distance pings."""
+# type B detector: probabilistic pings, not maze-distance pings.
 import math
 import random
 

@@ -1,7 +1,6 @@
 # Varshini does B content
 
-
-"""Type B: choose informative detector positions while balancing travel cost."""
+# Type B: choose informative detector positions while balancing travel cost.
 import math
 import random
 from collections import deque

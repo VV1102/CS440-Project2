@@ -1,6 +1,6 @@
 # Varshini does B content
 
-"""Bayesian location beliefs for the stationary LostBot."""
+# Bayesian location beliefs for the stationary LostBot.
 import math
 from src.detectorB import FOUND, PING, NO_PING, getPingProbability
 from src.pathfinding import getOpenCells
