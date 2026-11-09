@@ -10,10 +10,10 @@ from src.simulation import runSimulation
 
 # These are tentative settings for the experiments
 SHIP_SIZES = [20]
-SHIPS_PER_SIZE = 3
-TRIALS_PER_SHIP = 20
-TYPE_A_K_VALUES = [0, 1, 2, 3, 4, 5]
-TYPE_B_ALPHA_VALUES = []
+SHIPS_PER_SIZE = 2
+TRIALS_PER_SHIP = 10
+TYPE_A_K_VALUES = []
+TYPE_B_ALPHA_VALUES = [0.25, 0.5, 1.0, 1.5]
 MAX_ACTIONS = 3000
 MOVEMENT_COST = 1.0
 DETECTOR_COST = 0.5
