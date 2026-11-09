@@ -313,6 +313,7 @@ def runSimulation(grid, locatorPosition, lostBotPosition,
     detectorCount = 0
     detectorHistory = []
     positionHistory = [locatorPosition]
+    unchangedScans = 0
 
     # initialize the prior BEFORE the first detector reading
     # including the starting cell is important because FOUND is possible
@@ -349,7 +350,11 @@ def runSimulation(grid, locatorPosition, lostBotPosition,
 
         # after each observation, remove or reweight impossible locations
         # Type A keeps a set; Type B keeps a Bayesian probability dictionary
+        
         if detectorType == "A":
+    # Count the possible locations before updating
+            previousCount = len(knowledgeBase)
+
             knowledgeBase = updateKnowledgeBase(
                 knowledgeBase, locatorPosition, k, detectorResult
             )
@@ -357,17 +362,37 @@ def runSimulation(grid, locatorPosition, lostBotPosition,
             if not knowledgeBase:
                 raise RuntimeError("Type A knowledge base has no possible locations")
 
+    # Check whether the detector removed any possible locations
+            if len(knowledgeBase) == previousCount:
+                unchangedScans += 1
+            else:
+                unchangedScans = 0
+
+
         else:
             knowledgeBase = updateKnowledgeBaseB(
                 knowledgeBase, locatorPosition, detectorResult, alpha
             )
 
         # choose where the strategy wants the bot to go next
-        targetPosition = chooseSimulationTarget(
-            grid, locatorPosition, knowledgeBase,
-            detectorType, strategy, k, alpha,
-            movementCost, detectorCost, rng
-        )
+        
+# If Improved A is not reducing possible locations,
+# move toward the nearest possible LostBot cell
+        if (detectorType == "A" and strategy == "improved"
+                and unchangedScans >= 2):
+
+            targetPosition = chooseNearestPossibleCell(
+                grid, locatorPosition, knowledgeBase, rng
+            )
+
+        else:
+    # Otherwise use the normal strategy
+            targetPosition = chooseSimulationTarget(
+                grid, locatorPosition, knowledgeBase,
+                detectorType, strategy, k, alpha,
+                movementCost, detectorCost, rng
+            )
+
 
         path = getSimulationPath(grid, locatorPosition, targetPosition)
 
