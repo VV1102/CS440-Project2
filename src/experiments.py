@@ -300,9 +300,9 @@ def runExperiments():
     ]
 
     # we save all the results
-    saveCsv("results_typeB/py/experiment_trials.csv", trialRows, trialColumns)
-    saveCsv("results_typeB/py/experiment_summary.csv", summaryRows, summaryColumns)
-    saveCsv("results_typeB/py/experiment_failures.csv", failureRows, failureColumns)
+    saveCsv("../report/results_typeB/experiment_trials.csv", trialRows, trialColumns)
+    saveCsv("../report/results_typeB/experiment_summary.csv", summaryRows, summaryColumns)
+    saveCsv("../report/results_typeB/experiment_failures.csv", failureRows, failureColumns)
 
     print(
         "\nSaved experiment_trials.csv, "
