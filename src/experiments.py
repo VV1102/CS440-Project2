@@ -12,10 +12,10 @@ from src.simulation import runSimulation
 SHIP_SIZES = [20]
 SHIPS_PER_SIZE = 2
 TRIALS_PER_SHIP = 10
-TYPE_A_K_VALUES = [0, 1, 2, 3, 4, 5]
+TYPE_A_K_VALUES = []
 TYPE_B_ALPHA_VALUES = [0.25, 0.5, 1.0, 1.5]
 MAX_ACTIONS = 3000
-MOVEMENT_COST = 1.0
+MOVEMENT_COST = 0.0
 DETECTOR_COST = 0.5
 SEED = 440
 
@@ -300,9 +300,9 @@ def runExperiments():
     ]
 
     # we save all the results
-    saveCsv("../report/results_typeB/experiment_trials.csv", trialRows, trialColumns)
-    saveCsv("../report/results_typeB/experiment_summary.csv", summaryRows, summaryColumns)
-    saveCsv("../report/results_typeB/experiment_failures.csv", failureRows, failureColumns)
+    saveCsv("../report/results_comparison/experiment_trials.csv", trialRows, trialColumns)
+    saveCsv("../report/results_comparison/experiment_summary.csv", summaryRows, summaryColumns)
+    saveCsv("../report/results_comparison/experiment_failures.csv", failureRows, failureColumns)
 
     print(
         "\nSaved experiment_trials.csv, "
